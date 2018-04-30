@@ -1,0 +1,26 @@
+{
+    "name": "lipht/mvc",
+    "description": "MVC module for the Lipht Framework",
+    "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "lipht/lipht": "*",
+        "phpunit/phpunit": "^7.1"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../lipht"
+        }
+    ],
+    "scripts": {
+        "test": "phpunit --bootstrap vendor/autoload.php test"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lipht\\Mvc\\": "src/",
+            "Test\\": "test/"
+        }
+    }
+}
