@@ -8,12 +8,6 @@
         "lipht/lipht": "*",
         "phpunit/phpunit": "^7.1"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../lipht"
-        }
-    ],
     "scripts": {
         "test": "phpunit --bootstrap vendor/autoload.php test"
     },
