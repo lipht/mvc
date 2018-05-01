@@ -4,8 +4,38 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a74dee4940a6e8219e52db017d915ca0",
+    "content-hash": "e4939d739ca388915c944de7d5a07017",
     "packages": [
+        {
+            "name": "lipht/lipht",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lipht/lipht.git",
+                "reference": "be5e543f021e9081d81c41af360f95d9688ab7d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lipht/lipht/zipball/be5e543f021e9081d81c41af360f95d9688ab7d1",
+                "reference": "be5e543f021e9081d81c41af360f95d9688ab7d1",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lipht\\": "src/",
+                    "Test\\": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Lipht Framework: Core components",
+            "time": "2018-04-30T17:51:14+00:00"
+        }
+    ],
+    "packages-dev": [
         {
             "name": "doctrine/instantiator",
             "version": "1.1.0",
@@ -59,34 +89,6 @@
                 "instantiate"
             ],
             "time": "2017-07-22T11:58:36+00:00"
-        },
-        {
-            "name": "lipht/lipht",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lipht/lipht.git",
-                "reference": "be5e543f021e9081d81c41af360f95d9688ab7d1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lipht/lipht/zipball/be5e543f021e9081d81c41af360f95d9688ab7d1",
-                "reference": "be5e543f021e9081d81c41af360f95d9688ab7d1",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Lipht\\": "src/",
-                    "Test\\": "test/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Lipht Framework: Core components",
-            "time": "2018-04-30T17:51:14+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1489,7 +1491,6 @@
             "time": "2018-01-29T19:49:41+00:00"
         }
     ],
-    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": [],
