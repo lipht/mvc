@@ -6,7 +6,23 @@ use Lipht\Module;
 class Middleware {
     public static function result() {
         return function($callback, $args) {
-            $result = call_user_func($callback, $args);
+            $result = "";
+
+            try {
+                $result = call_user_func($callback, $args);
+            } catch (\InvalidArgumentException $e) {
+                header('HTTP/1.1 400 Bad Request');
+                $result = [
+                    'error' => get_class($e),
+                    'message' => $e->getMessage(),
+                ];
+            } catch (\Exception $e) {
+                header('HTTP/1.1 500 Internal Server Error');
+                $result = [
+                    'error' => get_class($e),
+                    'message' => $e->getMessage(),
+                ];
+            }
 
             if (is_array($result) || is_object($result)) {
                 echo json_encode($result);
