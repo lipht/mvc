@@ -48,7 +48,7 @@ class Middleware {
     }
 
     public static function cors($origin = '*') {
-        return function($callback, $args) {
+        return function($callback, $args) use($origin) {
             header("Access-Control-Allow-Origin: $origin");
             return call_user_func($callback, $args);
         };
