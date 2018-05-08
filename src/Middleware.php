@@ -46,4 +46,11 @@ class Middleware {
             return $module->inject($callback, [$args]);
         };
     }
+
+    public static function cors($origin = '*') {
+        return function($callback, $args) {
+            header("Access-Control-Allow-Origin: $origin");
+            return call_user_func($callback, $args);
+        };
+    }
 }
