@@ -46,7 +46,7 @@ class Route {
             $args->payload = file_get_contents('php://input');
 
         $middleware = array_merge(
-            $this->middleware,
+            array_reverse($this->middleware),
             [Middleware::result()]
         );
 
