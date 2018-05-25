@@ -17,6 +17,13 @@ class Router {
     }
 
     public function mapController($className, $middleware = []) {
+        if (is_array($className)) {
+            foreach ($className as $class) {
+                $this->mapController($class);
+            }
+            return;
+        }
+
         $TAG_NAME = 'route';
 
         $instance = new $className($this);

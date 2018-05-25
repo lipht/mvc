@@ -62,29 +62,16 @@ class RouterTest extends TestCase {
 
     public function testMapController() {
         $router = new Router(dirname(__DIR__));
-
         $router->mapController(DummyController::class);
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $route = $router->findRoute('dummy');
+        $this->assertDummyRoute($router);
+    }
 
-        $this->assertEquals('get', $route->getMethod());
-        $this->assertEquals((object)[], $route->parseArgs('dummy'));
+    public function testMapControllerArray() {
+        $router = new Router(dirname(__DIR__));
+        $router->mapController([DummyController::class]);
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $route = $router->findRoute('dummy/number/100');
-
-        $this->assertEquals('get', $route->getMethod());
-        $this->assertEquals(
-            (object)['id' => '100'],
-            $route->parseArgs('dummy/number/100')
-        );
-
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $route = $router->findRoute('dummy');
-
-        $this->assertEquals('post', $route->getMethod());
-        $this->assertEquals((object)[], $route->parseArgs('dummy'));
+        $this->assertDummyRoute($router);
     }
 
     public function testFileRouteOutput() {
@@ -117,6 +104,29 @@ class RouterTest extends TestCase {
         $result = ob_get_clean();
 
         $this->assertEquals(json_encode($expected), $result);
+    }
+
+    private function assertDummyRoute($router) {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $route = $router->findRoute('dummy');
+
+        $this->assertEquals('get', $route->getMethod());
+        $this->assertEquals((object)[], $route->parseArgs('dummy'));
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $route = $router->findRoute('dummy/number/100');
+
+        $this->assertEquals('get', $route->getMethod());
+        $this->assertEquals(
+            (object)['id' => '100'],
+            $route->parseArgs('dummy/number/100')
+        );
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $route = $router->findRoute('dummy');
+
+        $this->assertEquals('post', $route->getMethod());
+        $this->assertEquals((object)[], $route->parseArgs('dummy'));
     }
 
     private function setupMiddleware($key, $value) {
