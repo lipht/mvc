@@ -7,9 +7,12 @@ class Router {
     private $baseUrl = null;
     private $routes = [];
 
-    public function __construct($root) {
+    public function __construct($appRoot, $docRoot = null) {
         register_shutdown_function([$this, 'serve']);
-        $this->registerBaseDir($root);
+
+        $docRoot = $docRoot ?? $_SERVER['DOCUMENT_ROOT'];
+
+        $this->registerBaseDir($appRoot, $docRoot);
     }
 
     public function map($path, $method, $callback, $middleware = []) {
@@ -83,9 +86,16 @@ class Router {
         return new Route($path, $method, function($args) { header('HTTP/1.1 404 Not Found'); });
     }
 
-    protected function registerBaseDir($path) {
-        $forwardSlashedDocumentRoot = str_replace('\\', '/', $_SERVER["DOCUMENT_ROOT"]);
-        $this->baseUrl = substr($path, strlen($forwardSlashedDocumentRoot)).'/';
+    protected function registerBaseDir($path, $root) {
+        $forwardSlashedAppPath = str_replace('\\', '/', $path);
+        $forwardSlashedDocumentRoot = str_replace('\\', '/', $root);
+
+        if (strpos($forwardSlashedAppPath, $forwardSlashedDocumentRoot) !== 0) {
+            $this->baseUrl = '/';
+            return;
+        }
+
+        $this->baseUrl = substr($forwardSlashedAppPath, strlen($root)).'/';
     }
 
     private function getRelativePath() {
