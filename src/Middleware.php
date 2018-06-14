@@ -2,7 +2,6 @@
 namespace Lipht\Mvc;
 
 use Lipht\Module;
-use Lipht\CustomException;
 
 class Middleware {
     public static function result() {
@@ -11,8 +10,15 @@ class Middleware {
 
             try {
                 $result = call_user_func($callback, $args);
-            } catch (CustomException $e) {
+            } catch (\Lipht\InvalidArgumentException $e) {
                 header('HTTP/1.1 400 Bad Request');
+                $result = [
+                    'error' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'extra' => $e->getExtraData(),
+                ];
+            } catch (\Lipht\Exception $e) {
+                header('HTTP/1.1 500 Internal Server Error');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),

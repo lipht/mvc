@@ -147,6 +147,6 @@ class Module extends BaseModule {
 }
 class Router extends OriginalRouter {
     public function __construct($root) {
-        $this->registerBaseDir($root);
+        $this->registerBaseDir($root, $_SERVER['DOCUMENT_ROOT']);
     }
 }
