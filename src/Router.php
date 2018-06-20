@@ -103,9 +103,9 @@ class Router {
     }
 
     private function mapControllerAction($callback, $parentTag, $tag, $middleware) {
-        $path = $parentTag->args[0];
-        $parentMethod = isset($parentTag->args[1]) ? $parentTag->args[1] : 'GET';
-        $method = isset($tag->args[1]) ? $tag->args[1] : $parentMethod;
+        $path = $parentTag->args[0] ?? '';
+        $parentMethod = $parentTag->args[1] ?? 'GET';
+        $method = $tag->args[1] ?? $parentMethod;
 
         if (!empty($tag->args[0])) {
             $path .= '/'.$tag->args[0];
