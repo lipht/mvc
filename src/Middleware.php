@@ -30,6 +30,12 @@ class Middleware {
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                 ];
+            } catch (\Throwable $e) {
+                header('HTTP/1.1 500 Internal Server Error');
+                $result = [
+                    'error' => get_class($e),
+                    'message' => $e->getMessage(),
+                ];
             } catch (\Exception $e) {
                 header('HTTP/1.1 500 Internal Server Error');
                 $result = [
