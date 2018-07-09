@@ -91,11 +91,15 @@ class Router {
         $forwardSlashedDocumentRoot = str_replace('\\', '/', $root);
 
         if (strpos($forwardSlashedAppPath, $forwardSlashedDocumentRoot) !== 0) {
-            $this->baseUrl = '/';
+            $this->baseUrl = '';
             return;
         }
 
-        $this->baseUrl = substr($forwardSlashedAppPath, strlen($root)).'/';
+        $this->baseUrl = substr($forwardSlashedAppPath, strlen($root));
+
+        if (!empty($this->baseUrl))
+            $this->baseUrl .= '/';
+
     }
 
     private function getRelativePath() {
