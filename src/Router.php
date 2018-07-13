@@ -16,6 +16,17 @@ class Router {
     }
 
     public function map($path, $method, $callback, $middleware = []) {
+        if (is_array($path)) {
+            foreach($path as $piece)
+                $this->map($piece, $method, $callback, $middleware);
+
+            return;
+        }
+
+        if (substr($path, 0, 1) !== '/') {
+            $path = '/'.$path;
+        }
+
         $this->routes[] = new Route($path, $method, $callback, $middleware);
     }
 
