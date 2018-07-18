@@ -107,10 +107,6 @@ class Router {
         }
 
         $this->baseUrl = substr($forwardSlashedAppPath, strlen($root));
-
-        if (!empty($this->baseUrl))
-            $this->baseUrl .= '/';
-
     }
 
     private function getRelativePath() {
