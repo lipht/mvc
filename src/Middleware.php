@@ -45,6 +45,7 @@ class Middleware {
             }
 
             if (is_array($result) || is_object($result)) {
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode($result);
                 return $result;
             }
