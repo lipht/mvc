@@ -13,13 +13,13 @@ class RouterTest extends TestCase {
         parent::setup();
 
         $_SERVER['DOCUMENT_ROOT'] = dirname(dirname(__DIR__));
-        $_SERVER['REQUEST_URI'] = '/mvc/';
+        $_SERVER['REQUEST_URI'] = '/mvc';
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     public function testRootUrl() {
         $router = new Router(dirname(__DIR__));
-        $this->assertEquals('/mvc/', $router->getBaseUrl());
+        $this->assertEquals('/mvc', $router->getBaseUrl());
     }
 
     public function testMiddleware() {
@@ -87,6 +87,22 @@ class RouterTest extends TestCase {
         $this->assertEquals("Hello World!\n", $result);
     }
 
+    public function testAnnotationArg() {
+        $router = new Router(dirname(__DIR__));
+        $router->mapController(DummyController::class);
+
+        ob_start();
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/mvc/dummy/tagged';
+        $router->serve();
+        $result = ob_get_clean();
+
+        $this->assertEquals("Hello World!", $result);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
     public function testJsonRouteOutput() {
         $router = new Router(dirname(__DIR__));
         $expected = (object)[
@@ -114,12 +130,12 @@ class RouterTest extends TestCase {
         $this->assertEquals((object)[], $route->parseArgs('dummy'));
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $route = $router->findRoute('dummy/number/100');
+        $route = $router->findRoute('/dummy/number/100');
 
         $this->assertEquals('get', $route->getMethod());
         $this->assertEquals(
             (object)['id' => '100'],
-            $route->parseArgs('dummy/number/100')
+            $route->parseArgs('/dummy/number/100')
         );
 
         $_SERVER['REQUEST_METHOD'] = 'POST';

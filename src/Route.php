@@ -1,6 +1,8 @@
 <?php
 namespace Lipht\Mvc;
 
+use Lipht\AnnotationReader;
+
 class Route {
     private $pattern;
     private $method;
@@ -41,6 +43,12 @@ class Route {
     public function invoke(string $request) {
         $last = $this->callback;
         $args = $this->parseArgs($request);
+        $meta = $this->getMetaInfo();
+        $annotation = AnnotationReader::parse($meta);
+
+        if ($annotation) {
+            $args->tags = $annotation->tags;
+        }
 
         if (in_array($this->method, ['put', 'post', 'patch']))
             $args->payload = file_get_contents('php://input');
@@ -90,5 +98,13 @@ class Route {
         }
 
         return ['/^'.implode('\/', $pattern).'\/?$/i', $args];
+    }
+
+    private function getMetaInfo() {
+        if (is_array($this->callback)) {
+            return new \ReflectionMethod($this->callback[0], $this->callback[1]);
+        }
+
+        return new \ReflectionFunction($this->callback);
     }
 }

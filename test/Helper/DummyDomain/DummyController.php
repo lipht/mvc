@@ -43,4 +43,12 @@ class DummyController extends Controller {
     public function hello($args) {
         return isset($args->payload);
     }
+
+    /**
+     * @Hello(World!)
+     * @route(tagged)
+     */
+    public function annotations($args) {
+        return $args->tags[0]->name.' '.$args->tags[0]->args[0];
+    }
 }
