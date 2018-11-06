@@ -4,6 +4,7 @@ namespace Lipht\Mvc;
 use Lipht\AnnotationReader;
 
 class Route {
+    private $path;
     private $pattern;
     private $method;
     private $callback;
@@ -19,6 +20,7 @@ class Route {
                 throw new \Exception('Middleware['.$i.'] filter must be callable');
         }
 
+        $this->path = $path;
         [$this->pattern, $this->args] = $this->parsePathToPattern($path);
         $this->method = strtolower($method);
         $this->callback = $callback;
@@ -36,6 +38,9 @@ class Route {
         return !!$found;
     }
 
+    public function getPath() {
+        return $this->path;
+    }
     public function getMethod() {
         return $this->method;
     }

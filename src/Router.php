@@ -82,19 +82,21 @@ class Router {
     }
 
     public function serve() {
+        $this->handlePreflight();
+
         $uri = $this->getRelativePath();
         $route = $this->findRoute($uri);
         $route->invoke($uri);
     }
 
-    public function findRoute($path) {
-        $method = $_SERVER['REQUEST_METHOD'];
+    public function findRoute($path, $method = null) {
+        $method = $method ?? $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {
             if ($route->match($path, $method))
                 return $route;
         }
 
-        return new Route($path, $method, function($args) { header('HTTP/1.1 404 Not Found'); });
+        return new Route('404', $method, function($args) { header('HTTP/1.1 404 Not Found'); });
     }
 
     protected function registerBaseDir($path, $root) {
@@ -123,5 +125,30 @@ class Router {
         }
 
         $this->map($path, $method, $callback, $middleware);
+    }
+
+    private function handlePreflight() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'OPTIONS')
+            return;
+
+        $allowed = ['OPTIONS'];
+        $methods = ['HEAD', 'GET', 'POST', 'DELETE', 'PUT', 'PATCH'];
+        foreach ($methods as $method) {
+            $uri = $this->getRelativePath();
+            $route = $this->findRoute($uri, $method);
+
+            if ($route->getPath() === '404')
+                continue;
+
+            $allowed[] = $method;
+        }
+
+        $this->map('.*', 'OPTIONS', function ($args) use ($allowed) {
+            $origin = getallheaders()['Origin'] ?? '*';
+            header('Access-Control-Allow-Origin: '.$origin);
+            header('Access-Control-Allow-Methods: '.implode(', ', $allowed));
+            header('Access-Control-Max-Age: 86400');
+            return '';
+        });
     }
 }
