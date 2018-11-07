@@ -131,10 +131,13 @@ class Router {
         if ($_SERVER['REQUEST_METHOD'] !== 'OPTIONS')
             return;
 
+        $origin = getallheaders()['Origin'] ?? '*';
         $allowed = ['OPTIONS'];
         $methods = ['HEAD', 'GET', 'POST', 'DELETE', 'PUT', 'PATCH'];
+
+        $uri = $this->getRelativePath();
+
         foreach ($methods as $method) {
-            $uri = $this->getRelativePath();
             $route = $this->findRoute($uri, $method);
 
             if ($route->getPath() === '404')
@@ -143,11 +146,12 @@ class Router {
             $allowed[] = $method;
         }
 
-        $this->map('.*', 'OPTIONS', function ($args) use ($allowed) {
-            $origin = getallheaders()['Origin'] ?? '*';
+        $this->map('.*', 'OPTIONS', function ($args) use ($origin, $allowed) {
             header('Access-Control-Allow-Origin: '.$origin);
             header('Access-Control-Allow-Methods: '.implode(', ', $allowed));
+            header("Access-Control-Allow-Headers: Content-Type, Authorization");
             header('Access-Control-Max-Age: 86400');
+
             return '';
         });
     }
