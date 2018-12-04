@@ -10,7 +10,7 @@ class Router {
     public function __construct($appRoot, $docRoot = null) {
         register_shutdown_function([$this, 'serve']);
 
-        $docRoot = $docRoot ?? $_SERVER['DOCUMENT_ROOT'];
+        $docRoot = $docRoot ?? rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 
         $this->registerBaseDir($appRoot, $docRoot);
     }
