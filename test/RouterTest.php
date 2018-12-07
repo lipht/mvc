@@ -4,8 +4,8 @@ namespace Test;
 use Lipht\Mvc\Middleware;
 use Lipht\Mvc\Router as OriginalRouter;
 
-use Lipht\Module as BaseModule;
-use Test\Helper\Dummy\DummyService;
+use Test\Helper\Dummy\Module;
+use Test\Helper\Dummy\DummyInterface;
 use Test\Helper\DummyDomain\DummyController;
 
 class RouterTest extends TestCase {
@@ -48,11 +48,11 @@ class RouterTest extends TestCase {
 
     public function testCoreContainerAsMiddleware() {
         Module::init();
-        $module = new Module();
+        $module = Module::getInstance();
         $router = new Router(dirname(__DIR__));
 
         $self = $this;
-        $router->map('', 'GET', function($args, DummyService $service) use($self) {
+        $router->map('', 'GET', function($args, DummyInterface $service) use($self) {
             $expected = rand(1000, 9999);
             $self->assertEquals($expected, $service->echo($expected),
                 'Service failed to be injected by middleware');
@@ -156,11 +156,6 @@ class RouterTest extends TestCase {
     }
 }
 
-class Module extends BaseModule {
-    public static function listServices() {
-        return [DummyService::class];
-    }
-}
 class Router extends OriginalRouter {
     public function __construct($root) {
         $this->registerBaseDir($root, $_SERVER['DOCUMENT_ROOT']);
