@@ -18,6 +18,7 @@ class Middleware {
             $result = "";
 
             try {
+                header('HTTP/1.1 200 OK');
                 $result = call_user_func($callback, $args);
             } catch (\Lipht\InvalidArgumentException $e) {
                 $status('400');
