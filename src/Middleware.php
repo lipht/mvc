@@ -5,39 +5,42 @@ use Lipht\Module;
 
 class Middleware {
     public static function result() {
-        return function($callback, $args) {
+        $status = function($number) {
+            $messages = [
+                '400' => 'Bad Request',
+                '500' => 'Internal Server Error',
+            ];
+
+            header("HTTP/1.1 $number {$messages[$number]}");
+        };
+
+        return function($callback, $args) use($status) {
             $result = "";
 
             try {
                 $result = call_user_func($callback, $args);
             } catch (\Lipht\InvalidArgumentException $e) {
-                header('HTTP/1.1 400 Bad Request');
+                $status('400');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                     'extra' => $e->getExtraData(),
                 ];
             } catch (\Lipht\Exception $e) {
-                header('HTTP/1.1 500 Internal Server Error');
+                $status('500');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                     'extra' => $e->getExtraData(),
                 ];
             } catch (\InvalidArgumentException $e) {
-                header('HTTP/1.1 400 Bad Request');
+                $status('400');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                 ];
             } catch (\Throwable $e) {
-                header('HTTP/1.1 500 Internal Server Error');
-                $result = [
-                    'error' => get_class($e),
-                    'message' => $e->getMessage(),
-                ];
-            } catch (\Exception $e) {
-                header('HTTP/1.1 500 Internal Server Error');
+                $status('500');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
