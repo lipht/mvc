@@ -7,6 +7,7 @@ class Middleware {
     public static function result() {
         $status = function($number) {
             $messages = [
+                '200' => 'OK',
                 '400' => 'Bad Request',
                 '500' => 'Internal Server Error',
             ];
@@ -19,6 +20,7 @@ class Middleware {
 
             try {
                 $result = call_user_func($callback, $args);
+                $status('200');
             } catch (\Lipht\InvalidArgumentException $e) {
                 $status('400');
                 $result = [
