@@ -19,8 +19,8 @@ class Middleware {
             $result = "";
 
             try {
-                $result = call_user_func($callback, $args);
                 $status('200');
+                $result = call_user_func($callback, $args);
             } catch (\Lipht\InvalidArgumentException $e) {
                 $status('400');
                 $result = [
