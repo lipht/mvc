@@ -12,7 +12,7 @@ class Middleware {
                 '500' => 'Internal Server Error',
             ];
 
-            header("HTTP/1.1 $number {$messages[$number]}");
+            self::header("HTTP/1.1 $number {$messages[$number]}");
         };
 
         return function($callback, $args) use($status) {
@@ -50,7 +50,7 @@ class Middleware {
             }
 
             if (is_array($result) || is_object($result)) {
-                header('Content-Type: application/json; charset=utf-8');
+                self::header('Content-Type: application/json; charset=utf-8');
                 echo json_encode($result);
                 return $result;
             }
@@ -78,5 +78,13 @@ class Middleware {
             header("Access-Control-Allow-Origin: $origin");
             return call_user_func($callback, $args);
         };
+    }
+
+    private static function header($string) {
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
+
+        header($string);
     }
 }
