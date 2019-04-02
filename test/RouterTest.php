@@ -38,9 +38,8 @@ class RouterTest extends TestCase {
             $this->setupMiddleware('mid3', $expected['mid3']),
         ];
 
-        $self = $this;
-        $router->map('test/echo:\w+/ok/', 'GET', function($args) use($self, $expected) {
-            $self->assertEquals($expected, (array)$args,
+        $router->map('test/echo:\w+/ok/', 'GET', function($args) use($expected) {
+            $this->assertEquals($expected, (array)$args,
                 'Middleware failed to intercept');
         }, $middleware);
         $router->serve();
@@ -51,10 +50,9 @@ class RouterTest extends TestCase {
         $module = Module::getInstance();
         $router = new Router(dirname(__DIR__));
 
-        $self = $this;
-        $router->map('', 'GET', function($args, DummyInterface $service) use($self) {
+        $router->map('', 'GET', function($args, DummyInterface $service) {
             $expected = rand(1000, 9999);
-            $self->assertEquals($expected, $service->echo($expected),
+            $this->assertEquals($expected, $service->echo($expected),
                 'Service failed to be injected by middleware');
         }, [Middleware::module($module)]);
         $router->serve();

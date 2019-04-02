@@ -8,7 +8,10 @@ class Router {
     private $routes = [];
 
     public function __construct($appRoot, $docRoot = null) {
-        register_shutdown_function([$this, 'serve']);
+        register_shutdown_function(function() use($appRoot) {
+            chdir($appRoot);
+            $this->serve();
+        });
 
         $docRoot = $docRoot ?? rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 
