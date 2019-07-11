@@ -20,4 +20,47 @@ abstract class Controller {
     protected function readJson() {
         return json_decode($this->readRaw());
     }
+
+    protected function requireInput($payload, $inputList)
+    {
+        $this->acceptInput($payload, $inputList, $required = true);
+    }
+
+    protected function acceptInput($payload, $inputList, $required = false)
+    {
+        if (is_null($payload)) {
+            return $this->throwOrNot(new PayloadParseException('MISSING_PAYLOAD'), $required);
+        }
+
+        foreach ($inputList as $path => $type) {
+            $parts = explode('.', $path);
+            $check = [];
+            $checkObj = $payload;
+            foreach ($parts as $part) {
+                $check[] = $part;
+                $checkObj = $checkObj->{$part} ?? null;
+
+                if (is_null($checkObj)) {
+                    return $this->throwOrNot(new PayloadParseException('MISSING_FIELD', ['key' => implode('.', $check)]), $required);
+                }
+
+                if (!empty(array_diff($parts, $check))) {
+                    continue;
+                }
+
+                if (gettype($checkObj) != $type) {
+                    throw new PayloadParseException('UNEXPECTED_TYPE', ['key' => implode('.', $check), 'expected' => $type, 'type' => gettype($checkObj)]);
+                }
+            }
+        }
+    }
+
+    private function throwOrNot($exception, $throw = true)
+    {
+        if (!$throw) {
+            return;
+        }
+
+        throw $exception;
+    }
 }
