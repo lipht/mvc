@@ -81,11 +81,11 @@ class Middleware {
         };
     }
 
-    private static function header($string) {
+    private static function header($header) {
         if (php_sapi_name() === 'cli') {
             return;
         }
 
-        header($string);
+        header($header);
     }
 }
