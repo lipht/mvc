@@ -29,7 +29,8 @@ abstract class Controller {
     protected function acceptInput($payload, $inputList, $required = false)
     {
         if (is_null($payload)) {
-            return $this->throwOrNot(new PayloadParseException('MISSING_PAYLOAD'), $required);
+            $this->throwOrNot(new PayloadParseException('MISSING_PAYLOAD'), $required);
+            return;
         }
 
         foreach ($inputList as $path => $type) {
@@ -41,7 +42,8 @@ abstract class Controller {
                 $checkObj = $checkObj->{$part} ?? null;
 
                 if (is_null($checkObj)) {
-                    return $this->throwOrNot(new PayloadParseException('MISSING_FIELD', ['key' => implode('.', $check)]), $required);
+                    $this->throwOrNot(new PayloadParseException('MISSING_FIELD', ['key' => implode('.', $check)]), $required);
+                    return;
                 }
 
                 if (!empty(array_diff($parts, $check))) {
