@@ -1,4 +1,6 @@
 <?php
 namespace Lipht\Mvc;
 
-class PayloadParseException extends \Lipht\InvalidArgumentException {}
+use Lipht\InvalidArgumentException;
+
+class PayloadParseException extends InvalidArgumentException {}

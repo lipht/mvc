@@ -2,6 +2,7 @@
 namespace Lipht\Mvc;
 
 use Lipht\AnnotationReader;
+use ReflectionClass;
 
 class Router {
     private $baseUrl = null;
@@ -44,7 +45,7 @@ class Router {
         $TAG_NAME = 'route';
 
         $instance = new $className($this);
-        $meta = new \ReflectionClass($className);
+        $meta = new ReflectionClass($className);
         $annotation = AnnotationReader::parse($meta);
         $tags = $annotation->tags;
         if (empty($tags)) {

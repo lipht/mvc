@@ -1,7 +1,10 @@
 <?php
 namespace Lipht\Mvc;
 
+use Lipht\Exception;
+use Lipht\InvalidArgumentException;
 use Lipht\Module;
+use Throwable;
 
 class Middleware {
     public static function result() {
@@ -21,14 +24,14 @@ class Middleware {
             try {
                 $status('200');
                 $result = call_user_func($callback, $args);
-            } catch (\Lipht\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $status('400');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                     'extra' => $e->getExtraData(),
                 ];
-            } catch (\Lipht\Exception $e) {
+            } catch (Exception $e) {
                 $status('500');
                 $result = [
                     'error' => get_class($e),
@@ -41,7 +44,7 @@ class Middleware {
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                 ];
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $status('500');
                 $result = [
                     'error' => get_class($e),
