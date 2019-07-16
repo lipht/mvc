@@ -19,8 +19,6 @@ class Middleware {
         };
 
         return function($callback, $args) use($status) {
-            $result = "";
-
             try {
                 $status('200');
                 $result = call_user_func($callback, $args);
