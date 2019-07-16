@@ -100,7 +100,9 @@ class Router {
                 return $route;
         }
 
-        return new Route('404', $method, function($args) { header('HTTP/1.1 404 Not Found'); });
+        return new Route('404', $method, function() {
+            header('HTTP/1.1 404 Not Found');
+        });
     }
 
     protected function registerBaseDir($path, $root) {
@@ -150,7 +152,7 @@ class Router {
             $allowed[] = $method;
         }
 
-        $this->map('.*', 'OPTIONS', function ($args) use ($origin, $allowed) {
+        $this->map('.*', 'OPTIONS', function () use ($origin, $allowed) {
             header('Access-Control-Allow-Origin: '.$origin);
             header('Access-Control-Allow-Methods: '.implode(', ', $allowed));
             header("Access-Control-Allow-Headers: Content-Type, Authorization");
