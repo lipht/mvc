@@ -42,7 +42,7 @@ class Router {
             return;
         }
 
-        $TAG_NAME = 'route';
+        static $TAG_NAME = 'route';
 
         $instance = new $className($this);
         $meta = new ReflectionClass($className);
