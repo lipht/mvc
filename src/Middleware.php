@@ -1,12 +1,16 @@
 <?php
 namespace Lipht\Mvc;
 
+use Closure;
 use Lipht\Exception;
 use Lipht\InvalidArgumentException;
 use Lipht\Module;
 use Throwable;
 
 class Middleware {
+    /**
+     * @return Closure
+     */
     public static function result() {
         $status = function($number) {
             $messages = [
@@ -68,12 +72,20 @@ class Middleware {
         };
     }
 
+    /**
+     * @param Module $module
+     * @return Closure
+     */
     public static function module(Module $module) {
         return function($callback, $args) use($module) {
             return $module->inject($callback, [$args]);
         };
     }
 
+    /**
+     * @param string $origin
+     * @return Closure
+     */
     public static function cors($origin = '*') {
         return function($callback, $args) use($origin) {
             header("Access-Control-Allow-Origin: $origin");
@@ -81,6 +93,9 @@ class Middleware {
         };
     }
 
+    /**
+     * @param string $header
+     */
     private static function header($header) {
         if (php_sapi_name() === 'cli') {
             return;

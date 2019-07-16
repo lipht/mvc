@@ -1,31 +1,58 @@
 <?php
 namespace Lipht\Mvc;
 
+use Throwable;
+
 abstract class Controller {
+    /**
+     * @var Router $router
+     */
     protected $router;
 
+    /**
+     * Controller constructor.
+     * @param Router $router
+     */
     public function __construct(Router $router) {
         $this->router = $router;
     }
 
+    /**
+     * @param string $path
+     */
     protected function redirect($path) {
         header('Location: '.$path);
         exit;
     }
 
+    /**
+     * @return false|string
+     */
     protected function readRaw() {
         return file_get_contents('php://input');
     }
 
+    /**
+     * @return mixed
+     */
     protected function readJson() {
         return json_decode($this->readRaw());
     }
 
+    /**
+     * @throws PayloadParseException
+     * @throws Throwable
+     */
     protected function requireInput($payload, $inputList)
     {
         $this->acceptInput($payload, $inputList, $required = true);
     }
 
+    /**
+     * @param bool $required
+     * @throws PayloadParseException
+     * @throws Throwable
+     */
     protected function acceptInput($payload, $inputList, $required = false)
     {
         if (is_null($payload)) {
@@ -57,6 +84,11 @@ abstract class Controller {
         }
     }
 
+    /**
+     * @param Throwable $exception
+     * @param bool $throw
+     * @throws Throwable
+     */
     private function throwOrNot($exception, $throw = true)
     {
         if (!$throw) {

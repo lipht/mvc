@@ -1,13 +1,29 @@
 <?php
 namespace Lipht\Mvc;
 
+use Closure;
+use Exception;
+use Lipht\Annotation;
 use Lipht\AnnotationReader;
 use ReflectionClass;
+use ReflectionException;
 
 class Router {
+    /**
+     * @var string|null $baseUrl
+     */
     private $baseUrl = null;
+
+    /**
+     * @var Route[] $routes
+     */
     private $routes = [];
 
+    /**
+     * Router constructor.
+     * @param string $appRoot
+     * @param string|null $docRoot
+     */
     public function __construct($appRoot, $docRoot = null) {
         register_shutdown_function(function() use($appRoot) {
             chdir($appRoot);
@@ -19,6 +35,13 @@ class Router {
         $this->registerBaseDir($appRoot, $docRoot);
     }
 
+    /**
+     * @param string $path
+     * @param string $method
+     * @param callable $callback
+     * @param Closure[] $middleware
+     * @throws Exception
+     */
     public function map($path, $method, $callback, $middleware = []) {
         if (is_array($path)) {
             foreach($path as $piece)
@@ -34,6 +57,12 @@ class Router {
         $this->routes[] = new Route($path, $method, $callback, $middleware);
     }
 
+    /**
+     * @param string|string[] $className
+     * @param Closure[] $middleware
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function mapController($className, $middleware = []) {
         if (is_array($className)) {
             foreach ($className as $class) {
@@ -64,6 +93,7 @@ class Router {
                 if (!isset($annotation->methods->{$method->getName()}))
                     continue;
 
+                /** @var Annotation[] $children */
                 $children = $annotation->methods->{$method->getName()}->tags;
 
                 foreach ($children as $childTag) {
@@ -81,10 +111,17 @@ class Router {
         }
     }
 
+    /**
+     * @return string|null
+     */
     public function getBaseUrl() {
         return $this->baseUrl;
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function serve() {
         $this->handlePreflight();
 
@@ -93,6 +130,12 @@ class Router {
         $route->invoke($uri);
     }
 
+    /**
+     * @param string $path
+     * @param string|null $method
+     * @return Route
+     * @throws Exception
+     */
     public function findRoute($path, $method = null) {
         $method = $method ?? $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {
@@ -105,6 +148,10 @@ class Router {
         });
     }
 
+    /**
+     * @param string $path
+     * @param string $root
+     */
     protected function registerBaseDir($path, $root) {
         $forwardSlashedAppPath = str_replace('\\', '/', $path);
         $forwardSlashedDocumentRoot = str_replace('\\', '/', $root);
@@ -117,10 +164,20 @@ class Router {
         $this->baseUrl = substr($forwardSlashedAppPath, strlen($root));
     }
 
+    /**
+     * @return bool|string
+     */
     private function getRelativePath() {
         return substr($_SERVER['REQUEST_URI'], strlen($this->getBaseUrl()));
     }
 
+    /**
+     * @param array $callback
+     * @param Annotation $parentTag
+     * @param Annotation $tag
+     * @param Closure[] $middleware
+     * @throws Exception
+     */
     private function mapControllerAction($callback, $parentTag, $tag, $middleware) {
         $path = $parentTag->args[0] ?? '';
         $parentMethod = $parentTag->args[1] ?? 'GET';
@@ -133,6 +190,9 @@ class Router {
         $this->map($path, $method, $callback, $middleware);
     }
 
+    /**
+     * @throws Exception
+     */
     private function handlePreflight() {
         if ($_SERVER['REQUEST_METHOD'] !== 'OPTIONS')
             return;

@@ -1,6 +1,7 @@
 <?php
 namespace Lipht\Mvc;
 
+use Closure;
 use Exception;
 use Lipht\AnnotationReader;
 use ReflectionException;
@@ -9,13 +10,44 @@ use ReflectionMethod;
 use stdClass;
 
 class Route {
+    /**
+     * @var string $path
+     */
     private $path;
+
+    /**
+     * @var string $pattern
+     */
     private $pattern;
+
+    /**
+     * @var string $method
+     */
     private $method;
+
+    /**
+     * @var callable $callback
+     */
     private $callback;
+
+    /**
+     * @var Closure[] $middleware
+     */
     private $middleware = [];
+
+    /**
+     * @var string[] $args
+     */
     private $args = [];
 
+    /**
+     * Route constructor.
+     * @param string $path
+     * @param string $method
+     * @param callable $callback
+     * @param callable[] $middleware
+     * @throws Exception
+     */
     public function __construct(string $path, string $method, $callback, array $middleware = []) {
         if (!is_callable($callback))
             throw new Exception('Callback must be callable');
@@ -32,6 +64,12 @@ class Route {
         $this->middleware = $middleware;
     }
 
+    /**
+     * @param string $request
+     * @param string $method
+     * @return bool
+     * @throws Exception
+     */
     public function match(string $request, string $method) {
         $found = preg_match($this->pattern, $request);
         if ($found === false)
@@ -43,13 +81,25 @@ class Route {
         return !!$found;
     }
 
+    /**
+     * @return string
+     */
     public function getPath() {
         return $this->path;
     }
+
+    /**
+     * @return string
+     */
     public function getMethod() {
         return $this->method;
     }
 
+    /**
+     * @param string $request
+     * @return mixed
+     * @throws ReflectionException
+     */
     public function invoke(string $request) {
         $last = $this->callback;
         $args = $this->parseArgs($request);
@@ -77,6 +127,10 @@ class Route {
         return call_user_func($last, $args);
     }
 
+    /**
+     * @param string $request
+     * @return stdClass
+     */
     public function parseArgs($request) {
         $matches = [];
         preg_match($this->pattern, $request, $matches);
@@ -91,6 +145,10 @@ class Route {
         return $args;
     }
 
+    /**
+     * @param string $path
+     * @return array
+     */
     private function parsePathToPattern($path) {
         $parts = explode('/', rtrim($path, '/'));
         $pattern = [];
@@ -110,6 +168,10 @@ class Route {
         return ['/^'.implode('\/', $pattern).'\/?$/i', $args];
     }
 
+    /**
+     * @return ReflectionFunction|ReflectionMethod
+     * @throws ReflectionException
+     */
     private function getMetaInfo() {
         if (is_array($this->callback)) {
             return new ReflectionMethod($this->callback[0], $this->callback[1]);
