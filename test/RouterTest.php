@@ -81,6 +81,7 @@ class RouterTest extends TestCase {
     /**
      * @throws ReflectionException
      * @throws Exception
+     * @runInSeparateProcess
      */
     public function testCorsMiddleware() {
         $origin = 'my-origin';
@@ -239,6 +240,7 @@ class RouterTest extends TestCase {
 
     /**
      * @throws ReflectionException
+     * @runInSeparateProcess
      */
     public function testPreFlight()
     {
