@@ -215,7 +215,7 @@ class Router {
         $this->map('.*', 'OPTIONS', function () use ($origin, $allowed) {
             Header::send('Access-Control-Allow-Origin: '.$origin);
             Header::send('Access-Control-Allow-Methods: '.implode(', ', $allowed));
-            Header::send("Access-Control-Allow-Headers: Content-Type, Authorization");
+            Header::send('Access-Control-Allow-Headers: Content-Type, Authorization');
             Header::send('Access-Control-Max-Age: 86400');
 
             return '';
