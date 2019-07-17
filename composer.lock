@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f94c5716be5d068f635a162f084f461",
+    "content-hash": "ad5abd0cee9ca4103fe601d336c16fda",
     "packages": [
         {
             "name": "lipht/lipht",
@@ -1556,6 +1556,10 @@
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": {
+        "ext-json": "*"
+    },
+    "platform-dev": {
+        "ext-json": "*"
+    }
 }
