@@ -40,6 +40,8 @@ abstract class Controller {
     }
 
     /**
+     * @param object $payload
+     * @param array $inputList
      * @throws PayloadParseException
      * @throws Throwable
      */
@@ -49,6 +51,8 @@ abstract class Controller {
     }
 
     /**
+     * @param object $payload
+     * @param array $inputList
      * @param bool $required
      * @throws PayloadParseException
      * @throws Throwable
