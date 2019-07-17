@@ -1,9 +1,11 @@
 <?php
 namespace Test;
 
+use Exception;
 use Lipht\Mvc\Middleware;
 use Lipht\Mvc\Router as OriginalRouter;
 
+use ReflectionException;
 use Test\Helper\Dummy\Module;
 use Test\Helper\Dummy\DummyInterface;
 use Test\Helper\DummyDomain\DummyController;
@@ -29,6 +31,10 @@ class RouterTest extends TestCase {
         $this->assertEquals('/mvc', $router->getBaseUrl());
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testMiddleware() {
         $expected = [
             'echo' => 'uservalue',
@@ -52,6 +58,10 @@ class RouterTest extends TestCase {
         $router->serve();
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testCoreContainerAsMiddleware() {
         Module::init();
         $module = Module::getInstance();
@@ -65,6 +75,10 @@ class RouterTest extends TestCase {
         $router->serve();
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testMapController() {
         $router = new Router($this->root);
         $router->mapController(DummyController::class);
@@ -72,6 +86,10 @@ class RouterTest extends TestCase {
         $this->assertDummyRoute($router);
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testMapControllerArray() {
         $router = new Router($this->root);
         $router->mapController([DummyController::class]);
@@ -79,6 +97,9 @@ class RouterTest extends TestCase {
         $this->assertDummyRoute($router);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testFileRouteOutput() {
         $router = new Router($this->root);
         $router->mapController(DummyController::class);
@@ -92,6 +113,9 @@ class RouterTest extends TestCase {
         $this->assertEquals("Hello World!\n", $result);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testAnnotationArg() {
         $router = new Router($this->root);
         $router->mapController(DummyController::class);
@@ -107,6 +131,8 @@ class RouterTest extends TestCase {
 
     /**
      * @runInSeparateProcess
+     * @throws ReflectionException
+     * @throws Exception
      */
     public function testJsonRouteOutput() {
         $router = new Router($this->root);
@@ -127,6 +153,10 @@ class RouterTest extends TestCase {
         $this->assertEquals(json_encode($expected), $result);
     }
 
+    /**
+     * @param OriginalRouter $router
+     * @throws Exception
+     */
     private function assertDummyRoute($router) {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $route = $router->findRoute('dummy');
