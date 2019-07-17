@@ -9,16 +9,23 @@ use Test\Helper\Dummy\DummyInterface;
 use Test\Helper\DummyDomain\DummyController;
 
 class RouterTest extends TestCase {
+    /**
+     * @var string
+     */
+    private $root;
+
     public function setup() {
         parent::setup();
 
         $_SERVER['DOCUMENT_ROOT'] = dirname(dirname(__DIR__));
         $_SERVER['REQUEST_URI'] = '/mvc';
         $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $this->root = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['REQUEST_URI'];
     }
 
     public function testRootUrl() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $this->assertEquals('/mvc', $router->getBaseUrl());
     }
 
@@ -30,7 +37,7 @@ class RouterTest extends TestCase {
             'mid3' => rand(0, 25),
         ];
         $_SERVER['REQUEST_URI'] = '/mvc/test/'.$expected['echo'].'/ok';
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
 
         $middleware = [
             $this->setupMiddleware('mid1', $expected['mid1']),
@@ -48,7 +55,7 @@ class RouterTest extends TestCase {
     public function testCoreContainerAsMiddleware() {
         Module::init();
         $module = Module::getInstance();
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
 
         $router->map('', 'GET', function($args, DummyInterface $service) {
             $expected = rand(1000, 9999);
@@ -59,21 +66,21 @@ class RouterTest extends TestCase {
     }
 
     public function testMapController() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $router->mapController(DummyController::class);
 
         $this->assertDummyRoute($router);
     }
 
     public function testMapControllerArray() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $router->mapController([DummyController::class]);
 
         $this->assertDummyRoute($router);
     }
 
     public function testFileRouteOutput() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $router->mapController(DummyController::class);
 
         ob_start();
@@ -86,7 +93,7 @@ class RouterTest extends TestCase {
     }
 
     public function testAnnotationArg() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $router->mapController(DummyController::class);
 
         ob_start();
@@ -102,7 +109,7 @@ class RouterTest extends TestCase {
      * @runInSeparateProcess
      */
     public function testJsonRouteOutput() {
-        $router = new Router(dirname(__DIR__));
+        $router = new Router($this->root);
         $expected = (object)[
             'something' => 'clever',
         ];
