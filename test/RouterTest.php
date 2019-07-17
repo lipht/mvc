@@ -205,6 +205,19 @@ class RouterTest extends TestCase {
     }
 
     /**
+     * getallheaders() is exclusive of the apache extension, so there is a polyfill if necessary
+     */
+    public function testGetHeaders()
+    {
+        $_SERVER['HTTP_CUSTOM_HEADER'] = 'custom-value';
+        $expected = [ 'Custom-Header' => 'custom-value' ];
+
+        $result = getallheaders();
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * @throws ReflectionException
      */
     public function testPreFlight()
