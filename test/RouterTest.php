@@ -38,6 +38,7 @@ class RouterTest extends TestCase {
     public function testMiddleware() {
         $expected = [
             'echo' => 'uservalue',
+            'tags' => [],
             'mid1' => rand(0, 25),
             'mid2' => rand(0, 25),
             'mid3' => rand(0, 25),
