@@ -2,6 +2,7 @@
 namespace Test;
 
 use Exception;
+use Lipht\Annotation;
 use Lipht\Mvc\Middleware;
 use Lipht\Mvc\Router as OriginalRouter;
 
@@ -118,8 +119,29 @@ class RouterTest extends TestCase {
      * @throws ReflectionException
      */
     public function testAnnotationArg() {
+        $annotationMiddleware = function($callback, $args) {
+            $this->assertIsArray($args->tags);
+            /** @var Annotation $custom */
+            /** @var Annotation $route */
+            [$custom, $route] = $args->tags;
+
+            $this->assertInstanceOf(Annotation::class, $custom);
+            $this->assertEquals('Hello', $custom->name);
+            $this->assertCount(1, $custom->args);
+            $this->assertEquals('World!', reset($custom->args));
+
+            $this->assertInstanceOf(Annotation::class, $route);
+            $this->assertEquals('route', $route->name);
+            $this->assertCount(1, $route->args);
+            $this->assertEquals('tagged', reset($route->args));
+
+            return call_user_func($callback, $args);
+        };
+
         $router = new Router($this->root);
-        $router->mapController(DummyController::class);
+        $router->mapController(DummyController::class, [
+            $annotationMiddleware
+        ]);
 
         ob_start();
         $_SERVER['REQUEST_METHOD'] = 'GET';
