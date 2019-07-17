@@ -9,6 +9,8 @@ use ReflectionClass;
 use ReflectionException;
 
 class Router {
+    const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'DELETE', 'PUT', 'PATCH'];
+
     /**
      * @var string|null $baseUrl
      */
@@ -199,11 +201,10 @@ class Router {
 
         $origin = getallheaders()['Origin'] ?? '*';
         $allowed = ['OPTIONS'];
-        $methods = ['HEAD', 'GET', 'POST', 'DELETE', 'PUT', 'PATCH'];
 
         $uri = $this->getRelativePath();
 
-        foreach ($methods as $method) {
+        foreach (self::HTTP_METHODS as $method) {
             $route = $this->findRoute($uri, $method);
 
             if ($route->getPath() === '404')
