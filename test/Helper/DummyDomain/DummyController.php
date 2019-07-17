@@ -34,7 +34,7 @@ class DummyController extends Controller {
      * @route(file)
      */
     public function file($args) {
-        return "test/Helper/DummyDomain/View/file.txt.php";
+        return $_SERVER['DOCUMENT_ROOT'] . '/test/Helper/DummyDomain/View/file.txt.php';
     }
 
     /**

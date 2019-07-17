@@ -20,7 +20,7 @@ class RouterTest extends TestCase {
     public function setup() {
         parent::setup();
 
-        $_SERVER['DOCUMENT_ROOT'] = dirname(dirname(__DIR__));
+        $_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__);
         $_SERVER['REQUEST_URI'] = '/mvc';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
