@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lipht/lipht.git",
-                "reference": "6b6d0468142bf97d102080eba908fe00d2892c95"
+                "reference": "188c582f01614abb712b85f45902a2662a308e25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lipht/lipht/zipball/6b6d0468142bf97d102080eba908fe00d2892c95",
-                "reference": "6b6d0468142bf97d102080eba908fe00d2892c95",
+                "url": "https://api.github.com/repos/lipht/lipht/zipball/188c582f01614abb712b85f45902a2662a308e25",
+                "reference": "188c582f01614abb712b85f45902a2662a308e25",
                 "shasum": ""
             },
             "require": {
@@ -34,7 +34,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Lipht Framework: Core components",
-            "time": "2019-07-16T19:31:16+00:00"
+            "time": "2019-07-16T20:35:02+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
