@@ -3,6 +3,7 @@ namespace Test;
 
 use Exception;
 use Lipht\Annotation;
+use Lipht\Mvc\Header;
 use Lipht\Mvc\Middleware;
 use Lipht\Mvc\Router as OriginalRouter;
 
@@ -201,6 +202,33 @@ class RouterTest extends TestCase {
 
         $this->assertEquals('post', $route->getMethod());
         $this->assertEquals((object)[], $route->parseArgs('dummy'));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testPreFlight()
+    {
+        $router = new Router($this->root);
+        $router->mapController(DummyController::class);
+
+        ob_start();
+        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
+        $_SERVER['REQUEST_URI'] = '/mvc/dummy';
+        $router->serve();
+        $result = ob_get_clean();
+        $resultHeaders = Header::getCliHeaders();
+
+        $expectedHeaders = [
+            'HTTP/1.1 200 OK',
+            'Access-Control-Allow-Origin: *',
+            'Access-Control-Allow-Methods: OPTIONS, GET, POST',
+            'Access-Control-Allow-Headers: Content-Type, Authorization',
+            'Access-Control-Max-Age: 86400',
+        ];
+
+        $this->assertEquals('', $result);
+        $this->assertEquals($expectedHeaders, $resultHeaders);
     }
 
     private function setupMiddleware($key, $value) {
