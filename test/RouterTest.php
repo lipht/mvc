@@ -82,6 +82,26 @@ class RouterTest extends TestCase {
      * @throws ReflectionException
      * @throws Exception
      */
+    public function testCorsMiddleware() {
+        $origin = 'my-origin';
+        $expected = [
+            'HTTP/1.1 200 OK',
+            'Access-Control-Allow-Origin: ' . $origin,
+        ];
+
+        $router = new Router($this->root);
+
+        $router->map('', 'GET', function($args) use (&$expected) {
+            $headers = Header::getCliHeaders();
+            $this->assertEquals($expected, $headers);
+        }, [Middleware::cors($origin)]);
+        $router->serve();
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testMapController() {
         $router = new Router($this->root);
         $router->mapController(DummyController::class);
