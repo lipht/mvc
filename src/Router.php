@@ -144,7 +144,7 @@ class Router {
         }
 
         return new Route('404', $method, function() {
-            header('HTTP/1.1 404 Not Found');
+            Header::send('HTTP/1.1 404 Not Found');
         });
     }
 
@@ -213,10 +213,10 @@ class Router {
         }
 
         $this->map('.*', 'OPTIONS', function () use ($origin, $allowed) {
-            header('Access-Control-Allow-Origin: '.$origin);
-            header('Access-Control-Allow-Methods: '.implode(', ', $allowed));
-            header("Access-Control-Allow-Headers: Content-Type, Authorization");
-            header('Access-Control-Max-Age: 86400');
+            Header::send('Access-Control-Allow-Origin: '.$origin);
+            Header::send('Access-Control-Allow-Methods: '.implode(', ', $allowed));
+            Header::send("Access-Control-Allow-Headers: Content-Type, Authorization");
+            Header::send('Access-Control-Max-Age: 86400');
 
             return '';
         });

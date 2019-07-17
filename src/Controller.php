@@ -21,7 +21,7 @@ abstract class Controller {
      * @param string $path
      */
     protected function redirect($path) {
-        header('Location: '.$path);
+        Header::send('Location: '.$path);
         exit;
     }
 

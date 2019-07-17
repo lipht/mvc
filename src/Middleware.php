@@ -19,7 +19,7 @@ class Middleware {
                 '500' => 'Internal Server Error',
             ];
 
-            self::header("HTTP/1.1 $number {$messages[$number]}");
+            Header::send("HTTP/1.1 $number {$messages[$number]}");
         };
 
         return function($callback, $args) use($status) {
@@ -55,7 +55,7 @@ class Middleware {
             }
 
             if (is_array($result) || is_object($result)) {
-                self::header('Content-Type: application/json; charset=utf-8');
+                Header::send('Content-Type: application/json; charset=utf-8');
                 echo json_encode($result);
                 return $result;
             }
@@ -88,19 +88,8 @@ class Middleware {
      */
     public static function cors($origin = '*') {
         return function($callback, $args) use($origin) {
-            header("Access-Control-Allow-Origin: $origin");
+            Header::send("Access-Control-Allow-Origin: $origin");
             return call_user_func($callback, $args);
         };
-    }
-
-    /**
-     * @param string $header
-     */
-    private static function header($header) {
-        if (php_sapi_name() === 'cli') {
-            return;
-        }
-
-        header($header);
     }
 }
