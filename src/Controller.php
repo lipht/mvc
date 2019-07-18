@@ -93,7 +93,7 @@ abstract class Controller {
      * @param bool $throw
      * @throws Throwable
      */
-    private function throwOrNot($exception, $throw = true)
+    private function throwOrNot(Throwable $exception, $throw = true)
     {
         if (!$throw) {
             return;
