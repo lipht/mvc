@@ -49,6 +49,13 @@ class Middleware {
                 ];
             }
 
+            if (is_a($result, Template::class)) {
+                $mime = $result->getMime();
+                self::header("Content-Type: {$mime}; charset=utf-8");
+                echo $result->render();
+                return $result;
+            }
+
             if (is_array($result) || is_object($result)) {
                 self::header('Content-Type: application/json; charset=utf-8');
                 echo json_encode($result);
