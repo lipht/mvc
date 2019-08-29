@@ -1,9 +1,16 @@
 <?php
 namespace Lipht\Mvc;
 
+use Closure;
+use Lipht\Exception;
+use Lipht\InvalidArgumentException;
 use Lipht\Module;
+use Throwable;
 
 class Middleware {
+    /**
+     * @return Closure
+     */
     public static function result() {
         $status = function($number) {
             $messages = [
@@ -12,23 +19,21 @@ class Middleware {
                 '500' => 'Internal Server Error',
             ];
 
-            self::header("HTTP/1.1 $number {$messages[$number]}");
+            Header::send("HTTP/1.1 $number {$messages[$number]}");
         };
 
         return function($callback, $args) use($status) {
-            $result = "";
-
             try {
                 $status('200');
                 $result = call_user_func($callback, $args);
-            } catch (\Lipht\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $status('400');
                 $result = [
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                     'extra' => $e->getExtraData(),
                 ];
-            } catch (\Lipht\Exception $e) {
+            } catch (Exception $e) {
                 $status('500');
                 $result = [
                     'error' => get_class($e),
@@ -41,7 +46,7 @@ class Middleware {
                     'error' => get_class($e),
                     'message' => $e->getMessage(),
                 ];
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $status('500');
                 $result = [
                     'error' => get_class($e),
@@ -57,7 +62,7 @@ class Middleware {
             }
 
             if (is_array($result) || is_object($result)) {
-                self::header('Content-Type: application/json; charset=utf-8');
+                Header::send('Content-Type: application/json; charset=utf-8');
                 echo json_encode($result);
                 return $result;
             }
@@ -74,24 +79,24 @@ class Middleware {
         };
     }
 
+    /**
+     * @param Module $module
+     * @return Closure
+     */
     public static function module(Module $module) {
         return function($callback, $args) use($module) {
             return $module->inject($callback, [$args]);
         };
     }
 
+    /**
+     * @param string $origin
+     * @return Closure
+     */
     public static function cors($origin = '*') {
         return function($callback, $args) use($origin) {
-            header("Access-Control-Allow-Origin: $origin");
+            Header::send("Access-Control-Allow-Origin: $origin");
             return call_user_func($callback, $args);
         };
-    }
-
-    private static function header($string) {
-        if (php_sapi_name() === 'cli') {
-            return;
-        }
-
-        header($string);
     }
 }
