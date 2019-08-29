@@ -43,12 +43,12 @@ class Template
 
     public function render(array $viewbag = [])
     {
-        $viewbag = array_replace_recursive($this->viewbag, $viewbag);
+        $viewbag = $this->sortViewbag(array_replace_recursive($this->viewbag, $viewbag));
         $contents = $this->contents;
 
         foreach ($viewbag as $token => $value) {
             $value = $this->renderTag($value);
-            $contents = str_replace($token, $value, $contents);
+            $contents = str_replace('%'.$token.'%', $value, $contents);
         }
 
         return $contents;
@@ -65,5 +65,14 @@ class Template
         }
 
         return $value;
+    }
+
+    private function sortViewbag($viewbag)
+    {
+        uksort($viewbag, function($a, $b) {
+            return strlen($b) - strlen($a);
+        });
+
+        return $viewbag;
     }
 }

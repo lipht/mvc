@@ -39,8 +39,8 @@ HTML;
 
     public function testRenderWithStrings()
     {
-        $subject = new Template('<!DOCTYPE html><html><body>CHILD_DATA</body></html>', 'text/html');
-        $subject->CHILD_DATA = new Template('<h1>TITLE</h1>', 'text/html', ['TITLE' => 'Alice in Wonderland']);
+        $subject = new Template('<!DOCTYPE html><html><body>%CHILD_DATA%</body></html>', 'text/html');
+        $subject->CHILD_DATA = new Template('<h1>%TITLE%</h1>', 'text/html', ['TITLE' => 'Alice in Wonderland']);
 
         $expected = <<<HTML
             <!DOCTYPE html><html><body><h1>Alice in Wonderland</h1></body></html>
@@ -48,6 +48,29 @@ HTML;
 
         $expected = $this->trimLines($expected);
         $result = $this->trimLines($subject->render());
+
+        $this->assertEquals($expected, $result);
+        $this->assertEquals('text/html', $subject->getMime());
+    }
+
+    public function testRenderTagOrder()
+    {
+        $subject = new Template('<!DOCTYPE html><html><body>%A% %BA% %CBA% %B% %AB%</body></html>', 'text/html');
+
+        $expected = <<<HTML
+            <!DOCTYPE html><html><body>The result shouldn't have tags</body></html>
+HTML;
+
+        $viewbag = [
+            'A' => 'The',
+            'BA' => 'result',
+            'CBA' => 'shouldn\'t',
+            'B' => 'have',
+            'AB' => 'tags',
+        ];
+
+        $expected = $this->trimLines($expected);
+        $result = $this->trimLines($subject->render($viewbag));
 
         $this->assertEquals($expected, $result);
         $this->assertEquals('text/html', $subject->getMime());

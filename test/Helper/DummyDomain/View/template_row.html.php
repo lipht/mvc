@@ -1,1 +1,1 @@
-<tr><td>NAME</td></tr>
+<tr><td>%NAME%</td></tr>

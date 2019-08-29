@@ -5,7 +5,7 @@
     </head>
     <body>
         <table>
-            ROWS
+            %ROWS%
         </table>
     </body>
 </html>
