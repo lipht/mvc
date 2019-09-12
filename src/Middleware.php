@@ -56,7 +56,7 @@ class Middleware {
 
             if (is_a($result, Template::class)) {
                 $mime = $result->getMime();
-                self::header("Content-Type: {$mime}; charset=utf-8");
+                Header::send("Content-Type: {$mime}; charset=utf-8");
                 echo $result->render();
                 return $result;
             }
