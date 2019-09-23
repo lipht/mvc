@@ -96,6 +96,14 @@ class Route {
     }
 
     /**
+     * @return callable
+     */
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
+
+    /**
      * @param string $request
      * @return mixed
      * @throws ReflectionException
