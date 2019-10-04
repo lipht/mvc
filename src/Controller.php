@@ -64,7 +64,11 @@ abstract class Controller {
             return;
         }
 
-        foreach ($inputList as $path => $type) {
+        foreach ($inputList as $path => $types) {
+            if (!is_array($types)) {
+                $types = [$types];
+            }
+
             $parts = explode('.', $path);
             $check = [];
             $checkObj = $payload;
@@ -81,8 +85,8 @@ abstract class Controller {
                     continue;
                 }
 
-                if (gettype($checkObj) != $type) {
-                    throw new PayloadParseException('UNEXPECTED_TYPE', ['key' => implode('.', $check), 'expected' => $type, 'type' => gettype($checkObj)]);
+                if (!in_array(gettype($checkObj), $types)) {
+                    throw new PayloadParseException('UNEXPECTED_TYPE', ['key' => implode('.', $check), 'expected' => implode('|', $types), 'type' => gettype($checkObj)]);
                 }
             }
         }
