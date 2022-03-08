@@ -12,7 +12,7 @@ class Header {
      * @param bool $replace
      * @param int|null $http_response_code
      */
-    public static function send($header, $replace = true, $http_response_code = null) {
+    public static function send($header, $replace = true, $http_response_code = 0) {
         if (PHP_SAPI === self::CLI_ENVIRONMENT) {
             self::$cliHeaders[] = $header;
             return;

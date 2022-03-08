@@ -67,7 +67,7 @@ class Middleware {
                 return $result;
             }
 
-            if (file_exists($result)) {
+            if (!is_null($result) && file_exists($result)) {
                 call_user_func(function($resultViewFilename, $args) {
                     include($resultViewFilename);
                 }, $result, $args);
